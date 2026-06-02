@@ -154,7 +154,7 @@
       display: block;
       max-height: calc(100vh - 32px);
       overflow: visible;
-      background: url("assets/UI.png") center / contain no-repeat;
+      background: url("UI.png") center / contain no-repeat;
       filter: drop-shadow(0 22px 34px rgba(9, 6, 22, 0.24));
     }
 
@@ -1572,7 +1572,7 @@
     const SFX_VOLUME_LEVEL = 0.052;
     const SFX_VOLUME_GAME_OVER = 0.058;
     const BGM_ENABLED = true;
-    const BGM_AUDIO_SRC = "assets/青空空港.mp3";
+    const BGM_AUDIO_SRC = "青空空港.mp3";
     const BGM_AUDIO_VOLUME = 0.032;
     const BGM_AUDIO_RATE = 1;
     const STORY_BGM_AUDIO_VOLUME = 0.022;
@@ -1581,47 +1581,47 @@
     const MOBILE_VOICE_VOLUME_SCALE = 1.2;
     const BGM_TRACKS = {
       main: { src: BGM_AUDIO_SRC, volume: BGM_AUDIO_VOLUME, rate: BGM_AUDIO_RATE },
-      storyEarly: { src: "assets/bgm/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyMiddle: { src: "assets/bgm/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyBoss: { src: "assets/bgm/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyClear: { src: "assets/bgm/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyEnding: { src: "assets/bgm/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
+      storyEarly: { src: "BGM/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyMiddle: { src: "BGM/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyBoss: { src: "BGM/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyClear: { src: "BGM/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyEnding: { src: "BGM/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
     };
     const VOICE_VOLUME = 0.34;
     const VOICE_ASSETS = {
-      st: "assets/voice/st.wav",
-      ov: "assets/voice/ov.wav",
-      iku: "assets/voice/iku.wav",
-      no: "assets/voice/no.wav",
-      ya: "assets/voice/ya.wav",
-      win: "assets/voice/win.wav",
-      lose: "assets/voice/lose.wav",
-      to: "assets/voice/to.wav"
+      st: "声/st.wav",
+      ov: "声/ov.wav",
+      iku: "声/iku.wav",
+      no: "声/no.wav",
+      ya: "声/ya.wav",
+      win: "声/win.wav",
+      lose: "声/lose.wav",
+      to: "声/to.wav"
     };
-    const FRAME_ASSET_SRC = "assets/Frame2.png";
-    const GUIDE_CHARACTER_SRC = "assets/tamapon-guide.png";
-    const DEFAULT_BACKGROUND_SRC = "assets/back.png";
+    const FRAME_ASSET_SRC = "Frame2.png";
+    const GUIDE_CHARACTER_SRC = "タマポンガイド.png";
+    const DEFAULT_BACKGROUND_SRC = "back.png";
     const LEVEL_BACKGROUND_SOURCES = [
       DEFAULT_BACKGROUND_SRC,
-      "assets/back/back1.png",
-      "assets/back/back2.png",
-      "assets/back/back3.png",
-      "assets/back/back4.png",
-      "assets/back/back5.png",
-      "assets/back/back6.png",
-      "assets/back/back7.png",
-      "assets/back/back8.png",
-      "assets/back/back9.png"
+      "戻る/back1.png",
+      "戻る/back2.png",
+      "戻る/back3.png",
+      "戻る/back4.png",
+      "戻る/back5.png",
+      "戻る/back6.png",
+      "戻る/back7.png",
+      "戻る/back8.png",
+      "戻る/back9.png"
     ];
-    const SECRET_BACKGROUND_SRC = "assets/back/back10.png";
+    const SECRET_BACKGROUND_SRC = "戻る/back10.png";
     const CLEAR_PARTICLE_TYPES = ["popStar", "popDot", "popBubble", "popHeart", "popFood"];
     const CLEAR_FOOD_TYPES = ["fish", "carrot", "bone", "leaf"];
     const LOGO_ASSETS = {
-      mode: "assets/Mode.png",
-      start: "assets/Start.png",
-      over: "assets/OVER.png",
-      win: "assets/win.png",
-      lose: "assets/lose.png"
+      mode: "モード.png",
+      start: "開始.png",
+      over: "OVER.png",
+      win: "win.png",
+      lose: "失う.png"
     };
     const TITLE_DEMO_PAGES = [
       {
@@ -1684,13 +1684,13 @@
       "230323"
     ];
     const ANIMAL_TYPES = {
-      dog: { asset: "assets/animals/01.png", label: "01", base: "#f79a43", mid: "#ffc06b", light: "#ffe0ad", dark: "#9b4e16", face: "#ffd59a", ink: "#40220e", accent: "#ff7b3f" },
-      cat: { asset: "assets/animals/02.png", label: "02", base: "#ff79ba", mid: "#ffa9d4", light: "#ffe1ef", dark: "#b03d79", face: "#fff0f8", ink: "#5a2945", accent: "#ff92c8" },
-      rabbit: { asset: "assets/animals/03.png", label: "03", base: "#f0b047", mid: "#ffd27a", light: "#fff0c0", dark: "#a55e1a", face: "#ffe0ad", ink: "#4a2a12", accent: "#e36b45" },
-      chicken: { asset: "assets/animals/04.png", label: "04", base: "#3a3f55", mid: "#6f7898", light: "#d7dcee", dark: "#161925", face: "#f1f4ff", ink: "#12151d", accent: "#9c7cff" },
-      monkey: { asset: "assets/animals/05.png", label: "05", base: "#58b95a", mid: "#8be070", light: "#d9f59b", dark: "#2a7532", face: "#b9ee88", ink: "#173a1c", accent: "#ffe16b" },
-      panda: { asset: "assets/animals/06.png", label: "06", base: "#f34b43", mid: "#ff8275", light: "#ffc2b8", dark: "#a81f1d", face: "#ffe1db", ink: "#4f1411", accent: "#66c86a" },
-      frog: { asset: "assets/animals/07.png", label: "07", base: "#ffd43e", mid: "#ffe777", light: "#fff6b7", dark: "#bc8715", face: "#fff0a0", ink: "#4f3b0b", accent: "#78d36e" }
+      dog: { asset: "動物/01.png", label: "01", base: "#f79a43", mid: "#ffc06b", light: "#ffe0ad", dark: "#9b4e16", face: "#ffd59a", ink: "#40220e", accent: "#ff7b3f" },
+      cat: { asset: "動物/02.png", label: "02", base: "#ff79ba", mid: "#ffa9d4", light: "#ffe1ef", dark: "#b03d79", face: "#fff0f8", ink: "#5a2945", accent: "#ff92c8" },
+      rabbit: { asset: "動物/03.png", label: "03", base: "#f0b047", mid: "#ffd27a", light: "#fff0c0", dark: "#a55e1a", face: "#ffe0ad", ink: "#4a2a12", accent: "#e36b45" },
+      chicken: { asset: "動物/04.png", label: "04", base: "#3a3f55", mid: "#6f7898", light: "#d7dcee", dark: "#161925", face: "#f1f4ff", ink: "#12151d", accent: "#9c7cff" },
+      monkey: { asset: "動物/05.png", label: "05", base: "#58b95a", mid: "#8be070", light: "#d9f59b", dark: "#2a7532", face: "#b9ee88", ink: "#173a1c", accent: "#ffe16b" },
+      panda: { asset: "動物/06.png", label: "06", base: "#f34b43", mid: "#ff8275", light: "#ffc2b8", dark: "#a81f1d", face: "#ffe1db", ink: "#4f1411", accent: "#66c86a" },
+      frog: { asset: "動物/07.png", label: "07", base: "#ffd43e", mid: "#ffe777", light: "#fff6b7", dark: "#bc8715", face: "#fff0a0", ink: "#4f3b0b", accent: "#78d36e" }
     };
     const TILE_TYPES = ANIMAL_TYPES;
     const DIFFICULTIES = {
@@ -4926,21 +4926,21 @@
           image.onload = () => requestAnimationFrame(() => {
             if (game) drawBoard();
           });
-          image.src = assetUrl(`assets/story/${i}${suffix}.png`);
+          image.src = assetUrl(`${i}${suffix}.png`);
           storyImages.set(`${i}${suffix}`, image);
         }
         const background = new Image();
         background.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        background.src = assetUrl(`assets/story/h${i}.png`);
+        background.src = assetUrl(`h${i}.png`);
         storyImages.set(`h${i}`, background);
       }
       const ending = new Image();
       ending.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      ending.src = assetUrl("assets/story/h10.png");
+      ending.src = assetUrl("h10.png");
       storyImages.set("h10", ending);
       for (const [type, info] of Object.entries(TILE_TYPES)) {
         const image = new Image();
@@ -4985,11 +4985,11 @@
 
     function setBackgroundForStoryStage(roundIndex = 0, instant = false) {
       const stageIndex = Math.max(1, Math.min(STORY_STAGES.length, roundIndex + 1));
-      setBackgroundImage(`assets/story/h${stageIndex}.png`, instant);
+      setBackgroundImage(`h${stageIndex}.png`, instant);
     }
 
     function setEndingStoryBackground(instant = false) {
-      setBackgroundImage("assets/story/h10.png", instant);
+      setBackgroundImage("h10.png", instant);
     }
 
     loadGameAssets();
