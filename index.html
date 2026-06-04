@@ -454,12 +454,12 @@
 
     @media (hover: none) and (pointer: coarse) {
       :root {
-        --mobile-side-ui: clamp(124px, 20dvw, 204px);
+        --mobile-side-ui: clamp(112px, 18dvw, 190px);
         --mobile-left-touch: clamp(76px, 9.6dvw, 86px);
-        --mobile-right-touch: clamp(42px, 5.6dvw, 50px);
-        --mobile-gap: clamp(1px, 0.35dvw, 5px);
+        --mobile-right-touch: clamp(40px, 5.2dvw, 48px);
+        --mobile-gap: 0px;
         --mobile-frame-height: 100dvh;
-        --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 2px);
+        --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
       }
 
       html,
@@ -502,6 +502,7 @@
         width: 100%;
         height: 100%;
         min-height: 0;
+        place-items: end center;
       }
 
       .stage-wrap::before {
@@ -605,7 +606,7 @@
       .touch-pad--left {
         position: absolute;
         left: max(0px, env(safe-area-inset-left, 0px));
-        bottom: 2px;
+        bottom: 0;
         width: var(--mobile-left-touch);
         height: auto;
         grid-template-columns: repeat(2, 38px);
@@ -775,6 +776,7 @@
         width: 100%;
         height: 100%;
         min-height: 0;
+        place-items: end center;
       }
 
       .stage-wrap::before {
@@ -1563,6 +1565,11 @@
     const BATTLE_BOARD_Y = BOARD_Y;
     const BATTLE_PLAYER_X = 94;
     const BATTLE_CPU_X = 612;
+    const MOBILE_GAME_CELL = 50.4;
+    const MOBILE_BOARD_Y = 99;
+    const MOBILE_SOLO_X = (1000 - COLS * MOBILE_GAME_CELL) / 2;
+    const MOBILE_BATTLE_PLAYER_X = 86;
+    const MOBILE_BATTLE_CPU_X = 622;
     const SFX_MASTER_VOLUME = 0.86;
     const SFX_VOLUME_MOVE = 0.021;
     const SFX_VOLUME_ROTATE = 0.056;
@@ -5386,11 +5393,26 @@
       }
     }
 
+    function useMobileGameplayLayout() {
+      return typeof isTouchDevice === "function" && isTouchDevice();
+    }
+
     function getSoloLayout() {
+      if (useMobileGameplayLayout()) {
+        const scale = MOBILE_GAME_CELL / CELL;
+        return { x: MOBILE_SOLO_X, y: MOBILE_BOARD_Y, cell: MOBILE_GAME_CELL, scale, name: "solo-mobile" };
+      }
       return { x: BOARD_X, y: BOARD_Y, cell: CELL, scale: 1, name: "solo" };
     }
 
     function getBattleLayouts() {
+      if (useMobileGameplayLayout()) {
+        const scale = MOBILE_GAME_CELL / CELL;
+        return {
+          player: { x: MOBILE_BATTLE_PLAYER_X, y: MOBILE_BOARD_Y, cell: MOBILE_GAME_CELL, scale, name: "player-mobile" },
+          cpu: { x: MOBILE_BATTLE_CPU_X, y: MOBILE_BOARD_Y, cell: MOBILE_GAME_CELL, scale, name: "cpu-mobile" }
+        };
+      }
       const scale = BATTLE_CELL / CELL;
       return {
         player: { x: BATTLE_PLAYER_X, y: BATTLE_BOARD_Y, cell: BATTLE_CELL, scale, name: "player" },
