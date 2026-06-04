@@ -154,7 +154,7 @@
       display: block;
       max-height: calc(100vh - 32px);
       overflow: visible;
-      background: url("assets/UI.png") center / contain no-repeat;
+      background: url("UI.png") center / contain no-repeat;
       filter: drop-shadow(0 22px 34px rgba(9, 6, 22, 0.24));
     }
 
@@ -454,12 +454,12 @@
 
     @media (hover: none) and (pointer: coarse) {
       :root {
-        --mobile-side-ui: clamp(132px, 22dvw, 220px);
-        --mobile-left-touch: clamp(82px, 11dvw, 94px);
-        --mobile-right-touch: clamp(46px, 6.5dvw, 56px);
-        --mobile-gap: clamp(3px, 0.8dvw, 10px);
-        --mobile-frame-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 2px);
-        --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 8px);
+        --mobile-side-ui: clamp(124px, 20dvw, 204px);
+        --mobile-left-touch: clamp(76px, 9.6dvw, 86px);
+        --mobile-right-touch: clamp(42px, 5.6dvw, 50px);
+        --mobile-gap: clamp(1px, 0.35dvw, 5px);
+        --mobile-frame-height: 100dvh;
+        --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 2px);
       }
 
       html,
@@ -492,10 +492,10 @@
         justify-items: center;
         overflow: hidden;
         padding:
-          max(1px, env(safe-area-inset-top, 0px))
-          calc(var(--mobile-right-touch) + max(1px, env(safe-area-inset-right, 0px)))
-          max(1px, env(safe-area-inset-bottom, 0px))
-          calc(var(--mobile-left-touch) + max(1px, env(safe-area-inset-left, 0px)));
+          0
+          calc(var(--mobile-right-touch) + env(safe-area-inset-right, 0px))
+          0
+          calc(var(--mobile-left-touch) + env(safe-area-inset-left, 0px));
       }
 
       .stage-wrap {
@@ -604,13 +604,13 @@
 
       .touch-pad--left {
         position: absolute;
-        left: max(2px, env(safe-area-inset-left, 0px));
-        bottom: max(8px, env(safe-area-inset-bottom, 0px));
+        left: max(0px, env(safe-area-inset-left, 0px));
+        bottom: 2px;
         width: var(--mobile-left-touch);
         height: auto;
-        grid-template-columns: repeat(2, 40px);
-        grid-template-rows: 40px 18px 44px;
-        column-gap: 6px;
+        grid-template-columns: repeat(2, 38px);
+        grid-template-rows: 38px 18px 42px;
+        column-gap: 5px;
         row-gap: 0;
         align-items: end;
         align-content: end;
@@ -624,8 +624,8 @@
         bottom: 0;
         width: var(--mobile-right-touch);
         height: 100%;
-        grid-template-columns: 42px;
-        grid-template-rows: repeat(4, 42px);
+        grid-template-columns: 40px;
+        grid-template-rows: repeat(4, 40px);
         align-content: center;
         justify-content: end;
       }
@@ -765,10 +765,10 @@
         grid-template-columns: minmax(0, 1fr) var(--mobile-side-ui);
         gap: var(--mobile-gap);
         padding:
-          max(1px, env(safe-area-inset-top, 0px))
-          calc(var(--mobile-right-touch) + max(1px, env(safe-area-inset-right, 0px)))
-          max(1px, env(safe-area-inset-bottom, 0px))
-          calc(var(--mobile-left-touch) + max(1px, env(safe-area-inset-left, 0px)));
+          0
+          calc(var(--mobile-right-touch) + env(safe-area-inset-right, 0px))
+          0
+          calc(var(--mobile-left-touch) + env(safe-area-inset-left, 0px));
       }
 
       .stage-wrap {
@@ -1572,7 +1572,7 @@
     const SFX_VOLUME_LEVEL = 0.052;
     const SFX_VOLUME_GAME_OVER = 0.058;
     const BGM_ENABLED = true;
-    const BGM_AUDIO_SRC = "assets/青空空港.mp3";
+    const BGM_AUDIO_SRC = "青空空港.mp3";
     const BGM_AUDIO_VOLUME = 0.032;
     const BGM_AUDIO_RATE = 1;
     const STORY_BGM_AUDIO_VOLUME = 0.022;
@@ -1581,47 +1581,47 @@
     const MOBILE_VOICE_VOLUME_SCALE = 1.2;
     const BGM_TRACKS = {
       main: { src: BGM_AUDIO_SRC, volume: BGM_AUDIO_VOLUME, rate: BGM_AUDIO_RATE },
-      storyEarly: { src: "assets/bgm/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyMiddle: { src: "assets/bgm/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyBoss: { src: "assets/bgm/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyClear: { src: "assets/bgm/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyEnding: { src: "assets/bgm/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
+      storyEarly: { src: "BGM/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyMiddle: { src: "BGM/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyBoss: { src: "BGM/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyClear: { src: "BGM/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyEnding: { src: "BGM/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
     };
     const VOICE_VOLUME = 0.34;
     const VOICE_ASSETS = {
-      st: "assets/voice/st.wav",
-      ov: "assets/voice/ov.wav",
-      iku: "assets/voice/iku.wav",
-      no: "assets/voice/no.wav",
-      ya: "assets/voice/ya.wav",
-      win: "assets/voice/win.wav",
-      lose: "assets/voice/lose.wav",
-      to: "assets/voice/to.wav"
+      st: "voice/st.wav",
+      ov: "voice/ov.wav",
+      iku: "voice/iku.wav",
+      no: "voice/no.wav",
+      ya: "voice/ya.wav",
+      win: "voice/win.wav",
+      lose: "voice/lose.wav",
+      to: "voice/to.wav"
     };
-    const FRAME_ASSET_SRC = "assets/Frame2.png";
-    const GUIDE_CHARACTER_SRC = "assets/tamapon-guide.png";
-    const DEFAULT_BACKGROUND_SRC = "assets/back.png";
+    const FRAME_ASSET_SRC = "Frame2.png";
+    const GUIDE_CHARACTER_SRC = "tamapon-guide.png";
+    const DEFAULT_BACKGROUND_SRC = "back.png";
     const LEVEL_BACKGROUND_SOURCES = [
       DEFAULT_BACKGROUND_SRC,
-      "assets/back/back1.png",
-      "assets/back/back2.png",
-      "assets/back/back3.png",
-      "assets/back/back4.png",
-      "assets/back/back5.png",
-      "assets/back/back6.png",
-      "assets/back/back7.png",
-      "assets/back/back8.png",
-      "assets/back/back9.png"
+      "back/back1.png",
+      "back/back2.png",
+      "back/back3.png",
+      "back/back4.png",
+      "back/back5.png",
+      "back/back6.png",
+      "back/back7.png",
+      "back/back8.png",
+      "back/back9.png"
     ];
-    const SECRET_BACKGROUND_SRC = "assets/back/back10.png";
+    const SECRET_BACKGROUND_SRC = "back/back10.png";
     const CLEAR_PARTICLE_TYPES = ["popStar", "popDot", "popBubble", "popHeart", "popFood"];
     const CLEAR_FOOD_TYPES = ["fish", "carrot", "bone", "leaf"];
     const LOGO_ASSETS = {
-      mode: "assets/Mode.png",
-      start: "assets/Start.png",
-      over: "assets/OVER.png",
-      win: "assets/win.png",
-      lose: "assets/lose.png"
+      mode: "Mode.png",
+      start: "Start.png",
+      over: "OVER.png",
+      win: "win.png",
+      lose: "lose.png"
     };
     const TITLE_DEMO_PAGES = [
       {
@@ -1684,13 +1684,13 @@
       "230323"
     ];
     const ANIMAL_TYPES = {
-      dog: { asset: "assets/animals/01.png", label: "01", base: "#f79a43", mid: "#ffc06b", light: "#ffe0ad", dark: "#9b4e16", face: "#ffd59a", ink: "#40220e", accent: "#ff7b3f" },
-      cat: { asset: "assets/animals/02.png", label: "02", base: "#ff79ba", mid: "#ffa9d4", light: "#ffe1ef", dark: "#b03d79", face: "#fff0f8", ink: "#5a2945", accent: "#ff92c8" },
-      rabbit: { asset: "assets/animals/03.png", label: "03", base: "#f0b047", mid: "#ffd27a", light: "#fff0c0", dark: "#a55e1a", face: "#ffe0ad", ink: "#4a2a12", accent: "#e36b45" },
-      chicken: { asset: "assets/animals/04.png", label: "04", base: "#3a3f55", mid: "#6f7898", light: "#d7dcee", dark: "#161925", face: "#f1f4ff", ink: "#12151d", accent: "#9c7cff" },
-      monkey: { asset: "assets/animals/05.png", label: "05", base: "#58b95a", mid: "#8be070", light: "#d9f59b", dark: "#2a7532", face: "#b9ee88", ink: "#173a1c", accent: "#ffe16b" },
-      panda: { asset: "assets/animals/06.png", label: "06", base: "#f34b43", mid: "#ff8275", light: "#ffc2b8", dark: "#a81f1d", face: "#ffe1db", ink: "#4f1411", accent: "#66c86a" },
-      frog: { asset: "assets/animals/07.png", label: "07", base: "#ffd43e", mid: "#ffe777", light: "#fff6b7", dark: "#bc8715", face: "#fff0a0", ink: "#4f3b0b", accent: "#78d36e" }
+      dog: { asset: "animals/01.png", label: "01", base: "#f79a43", mid: "#ffc06b", light: "#ffe0ad", dark: "#9b4e16", face: "#ffd59a", ink: "#40220e", accent: "#ff7b3f" },
+      cat: { asset: "animals/02.png", label: "02", base: "#ff79ba", mid: "#ffa9d4", light: "#ffe1ef", dark: "#b03d79", face: "#fff0f8", ink: "#5a2945", accent: "#ff92c8" },
+      rabbit: { asset: "animals/03.png", label: "03", base: "#f0b047", mid: "#ffd27a", light: "#fff0c0", dark: "#a55e1a", face: "#ffe0ad", ink: "#4a2a12", accent: "#e36b45" },
+      chicken: { asset: "animals/04.png", label: "04", base: "#3a3f55", mid: "#6f7898", light: "#d7dcee", dark: "#161925", face: "#f1f4ff", ink: "#12151d", accent: "#9c7cff" },
+      monkey: { asset: "animals/05.png", label: "05", base: "#58b95a", mid: "#8be070", light: "#d9f59b", dark: "#2a7532", face: "#b9ee88", ink: "#173a1c", accent: "#ffe16b" },
+      panda: { asset: "animals/06.png", label: "06", base: "#f34b43", mid: "#ff8275", light: "#ffc2b8", dark: "#a81f1d", face: "#ffe1db", ink: "#4f1411", accent: "#66c86a" },
+      frog: { asset: "animals/07.png", label: "07", base: "#ffd43e", mid: "#ffe777", light: "#fff6b7", dark: "#bc8715", face: "#fff0a0", ink: "#4f3b0b", accent: "#78d36e" }
     };
     const TILE_TYPES = ANIMAL_TYPES;
     const DIFFICULTIES = {
@@ -4711,20 +4711,40 @@
       }
 
       pollGamepads() {
-        const pads = navigator.getGamepads ? navigator.getGamepads() : [];
-        const pad = [...pads].find(Boolean);
-        if (!pad) return;
-        const axisX = pad.axes[0] || 0;
-        const axisY = pad.axes[1] || 0;
-        const left = pad.buttons[14]?.pressed || axisX < -GAMEPAD_DEADZONE;
-        const right = pad.buttons[15]?.pressed || axisX > GAMEPAD_DEADZONE;
-        const up = pad.buttons[12]?.pressed || axisY < -GAMEPAD_DEADZONE;
-        const down = pad.buttons[13]?.pressed || axisY > GAMEPAD_DEADZONE;
-        const face0 = pad.buttons[0]?.pressed;
-        const face1 = pad.buttons[1]?.pressed;
-        const face2 = pad.buttons[2]?.pressed;
-        const face3 = pad.buttons[3]?.pressed;
-        const menu = pad.buttons[9]?.pressed || pad.buttons[8]?.pressed;
+        const pads = navigator.getGamepads
+          ? [...navigator.getGamepads()].filter(pad => pad && pad.connected !== false)
+          : [];
+        if (!pads.length) {
+          this.resetGamepadState();
+          return;
+        }
+        const pressed = (pad, index) => Boolean(pad.buttons?.[index]?.pressed);
+        const axis = (pad, index) => {
+          const value = Number(pad.axes?.[index] || 0);
+          return Number.isFinite(value) ? value : 0;
+        };
+        const axisNegative = (pad, index) => axis(pad, index) < -GAMEPAD_DEADZONE;
+        const axisPositive = (pad, index) => axis(pad, index) > GAMEPAD_DEADZONE;
+        let left = false;
+        let right = false;
+        let up = false;
+        let down = false;
+        let face0 = false;
+        let face1 = false;
+        let face2 = false;
+        let face3 = false;
+        let menu = false;
+        for (const pad of pads) {
+          left ||= pressed(pad, 14) || axisNegative(pad, 0) || axisNegative(pad, 2);
+          right ||= pressed(pad, 15) || axisPositive(pad, 0) || axisPositive(pad, 2);
+          up ||= pressed(pad, 12) || axisNegative(pad, 1) || axisNegative(pad, 3);
+          down ||= pressed(pad, 13) || axisPositive(pad, 1) || axisPositive(pad, 3);
+          face0 ||= pressed(pad, 0);
+          face1 ||= pressed(pad, 1);
+          face2 ||= pressed(pad, 2);
+          face3 ||= pressed(pad, 3);
+          menu ||= pressed(pad, 8) || pressed(pad, 9) || pressed(pad, 10) || pressed(pad, 11) || pressed(pad, 16) || pressed(pad, 17);
+        }
         if (!down) this.softDropInputLocked = false;
         const anyInput = left || right || up || down || face0 || face1 || face2 || face3 || menu;
         if (anyInput && !this.prevButtons.gpAnyInput) this.unlockSoundFromInput();
@@ -4877,6 +4897,21 @@
         this.edgeButton("gpMenu", menu, () => this.togglePause());
       }
 
+      resetGamepadState() {
+        if (!this.keys.has("ArrowDown")) {
+          this.softDropInputLocked = false;
+          this.setSoftDrop(false);
+        }
+        if (!this.keys.has("ArrowLeft") && !this.keys.has("ArrowRight")) {
+          this.horizontalDir = 0;
+          this.horizontalDelayTimer = 0;
+          this.horizontalRepeatTimer = 0;
+        }
+        for (const name of Object.keys(this.prevButtons)) {
+          if (name.startsWith("gp")) this.prevButtons[name] = false;
+        }
+      }
+
       edgeButton(name, pressed, onPress, onRelease = null) {
         if (pressed && !this.prevButtons[name]) onPress();
         if (!pressed && this.prevButtons[name] && onRelease) onRelease();
@@ -4926,21 +4961,21 @@
           image.onload = () => requestAnimationFrame(() => {
             if (game) drawBoard();
           });
-          image.src = assetUrl(`assets/story/${i}${suffix}.png`);
+          image.src = assetUrl(`${i}${suffix}.png`);
           storyImages.set(`${i}${suffix}`, image);
         }
         const background = new Image();
         background.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        background.src = assetUrl(`assets/story/h${i}.png`);
+        background.src = assetUrl(`h${i}.png`);
         storyImages.set(`h${i}`, background);
       }
       const ending = new Image();
       ending.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      ending.src = assetUrl("assets/story/h10.png");
+      ending.src = assetUrl("h10.png");
       storyImages.set("h10", ending);
       for (const [type, info] of Object.entries(TILE_TYPES)) {
         const image = new Image();
@@ -4985,11 +5020,11 @@
 
     function setBackgroundForStoryStage(roundIndex = 0, instant = false) {
       const stageIndex = Math.max(1, Math.min(STORY_STAGES.length, roundIndex + 1));
-      setBackgroundImage(`assets/story/h${stageIndex}.png`, instant);
+      setBackgroundImage(`h${stageIndex}.png`, instant);
     }
 
     function setEndingStoryBackground(instant = false) {
-      setBackgroundImage("assets/story/h10.png", instant);
+      setBackgroundImage("h10.png", instant);
     }
 
     loadGameAssets();
@@ -8294,6 +8329,14 @@
       game.unlockSoundFromInput();
     }, { capture: true });
     document.addEventListener("touchstart", () => game.unlockSoundFromInput(), { capture: true, passive: true });
+    window.addEventListener("gamepadconnected", () => {
+      focusGameCanvas();
+      game.unlockSoundFromInput();
+      game.pollGamepads();
+    });
+    window.addEventListener("gamepaddisconnected", () => {
+      game.resetGamepadState();
+    });
 
     touchControlsEl?.addEventListener("contextmenu", event => event.preventDefault());
     touchMovePadEl?.addEventListener("pointerdown", event => {
