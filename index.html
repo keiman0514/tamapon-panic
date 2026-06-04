@@ -154,7 +154,9 @@
       display: block;
       max-height: calc(100vh - 32px);
       overflow: visible;
-      background: url("UI.png") center / contain no-repeat;
+      background:
+        url("UI.png") center / contain no-repeat,
+        url("assets/ui/UI.png") center / contain no-repeat;
       filter: drop-shadow(0 22px 34px rgba(9, 6, 22, 0.24));
     }
 
@@ -1559,7 +1561,7 @@
     const RISE_IMPACT_SHAKE_PX = 4.2;
     const HIGH_SCORE_FLASH_MS = 980;
     const HIGH_SCORE_STORAGE_PREFIX = "tamaponPanic.highScore.v1";
-    const ASSET_VERSION = "20260527-guide";
+    const ASSET_VERSION = "20260605-linkfix";
     const CPU_DROP_MULTIPLIER = 1.08;
     const BATTLE_CELL = CELL;
     const BATTLE_BOARD_Y = BOARD_Y;
@@ -1588,11 +1590,11 @@
     const MOBILE_VOICE_VOLUME_SCALE = 1.2;
     const BGM_TRACKS = {
       main: { src: BGM_AUDIO_SRC, volume: BGM_AUDIO_VOLUME, rate: BGM_AUDIO_RATE },
-      storyEarly: { src: "bgm/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyMiddle: { src: "bgm/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyBoss: { src: "bgm/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyClear: { src: "bgm/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
-      storyEnding: { src: "bgm/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
+      storyEarly: { src: "BGM/sb1.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyMiddle: { src: "BGM/sb2.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyBoss: { src: "BGM/lb.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyClear: { src: "BGM/sa.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 },
+      storyEnding: { src: "BGM/ed.mp3", volume: STORY_BGM_AUDIO_VOLUME, rate: 1 }
     };
     const VOICE_VOLUME = 0.34;
     const VOICE_ASSETS = {
@@ -1742,8 +1744,81 @@
       return LEVEL_BACKGROUND_SOURCES[index];
     }
 
+    function uniqueItems(items) {
+      return [...new Set(items.filter(Boolean))];
+    }
+
+    function assetCandidates(src) {
+      const clean = String(src || "").split("?")[0];
+      const candidates = [clean];
+      if (/^(Frame2|Mode|OVER|Start|UI|back|win|lose|tamapon-guide)\.png$/i.test(clean)) {
+        candidates.push(`assets/ui/${clean}`);
+      }
+      if (/^\d+[ab]\.png$/i.test(clean)) {
+        const suffix = clean.match(/[ab]\.png$/i)?.[0]?.[0]?.toLowerCase();
+        candidates.push(`assets/story-${suffix}/${clean}`, `assets/story/${clean}`);
+      }
+      if (/^h\d+\.png$/i.test(clean)) {
+        candidates.push(`assets/story-bg/${clean}`, `assets/story/${clean}`);
+      }
+      if (clean.startsWith("animals/")) {
+        candidates.push(`assets/${clean}`);
+      }
+      if (clean.startsWith("back/")) {
+        candidates.push(clean.replace(/^back\//, "assets/backdrops/"), `assets/${clean}`);
+      }
+      if (clean.startsWith("BGM/")) {
+        candidates.push(clean.replace(/^BGM\//, "bgm/"), clean.replace(/^BGM\//, "assets/music/"), clean.replace(/^BGM\//, "assets/bgm/"));
+      }
+      if (clean.startsWith("bgm/")) {
+        candidates.push(clean.replace(/^bgm\//, "BGM/"), clean.replace(/^bgm\//, "assets/music/"), clean.replace(/^bgm\//, "assets/bgm/"));
+      }
+      if (clean.startsWith("voice/")) {
+        candidates.push(`assets/${clean}`);
+      }
+      if (clean === "青空空港.mp3") {
+        candidates.push("BGM/青空空港.mp3", "bgm/青空空港.mp3", "assets/music/青空空港.mp3");
+      }
+      return uniqueItems(candidates);
+    }
+
+    function assetUrlForPath(path) {
+      return `${path}?v=${ASSET_VERSION}`;
+    }
+
+    function assetUrls(src) {
+      return assetCandidates(src).map(assetUrlForPath);
+    }
+
     function assetUrl(src) {
-      return `${src}?v=${ASSET_VERSION}`;
+      return assetUrls(src)[0];
+    }
+
+    function cssAssetUrls(src) {
+      return assetUrls(src).map(url => `url("${url}")`).join(", ");
+    }
+
+    function loadImageWithFallback(image, src) {
+      const urls = assetUrls(src);
+      let index = 0;
+      image.onerror = () => {
+        index += 1;
+        if (index < urls.length) image.src = urls[index];
+      };
+      image.src = urls[index];
+    }
+
+    function createAudioWithFallback(src) {
+      const urls = assetUrls(src);
+      let index = 0;
+      const audio = new Audio(urls[index]);
+      audio.addEventListener("error", () => {
+        if (index >= urls.length - 1) return;
+        index += 1;
+        audio.src = urls[index];
+        audio.load();
+      });
+      return audio;
     }
 
     const canvas = document.getElementById("game");
@@ -1893,7 +1968,7 @@
       initAudioBgm(trackKey = "main") {
         const config = this.bgmTrackConfig(trackKey);
         if (!this.bgmEnabled || !config?.src || this.bgmAudios[trackKey]) return this.bgmAudios[trackKey] || null;
-        const audio = new Audio(config.src);
+        const audio = createAudioWithFallback(config.src);
         audio.loop = true;
         audio.preload = "auto";
         audio.volume = this.bgmVolume(config);
@@ -1909,7 +1984,7 @@
       initVoices() {
         this.voiceAudios = {};
         for (const [key, src] of Object.entries(VOICE_ASSETS)) {
-          const audio = new Audio(src);
+          const audio = createAudioWithFallback(src);
           audio.preload = "auto";
           audio.volume = this.voiceVolume();
           this.voiceAudios[key] = audio;
@@ -4944,22 +5019,22 @@
         frameImageReady = true;
         frameSpriteCache.clear();
       };
-      frameImage.src = assetUrl(FRAME_ASSET_SRC);
+      loadImageWithFallback(frameImage, FRAME_ASSET_SRC);
       guideImage.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      guideImage.src = assetUrl(GUIDE_CHARACTER_SRC);
+      loadImageWithFallback(guideImage, GUIDE_CHARACTER_SRC);
       for (const [key, src] of Object.entries(LOGO_ASSETS)) {
         const image = new Image();
         image.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        image.src = assetUrl(src);
+        loadImageWithFallback(image, src);
         logoImages.set(key, image);
       }
       for (const src of [...LEVEL_BACKGROUND_SOURCES, SECRET_BACKGROUND_SRC]) {
         const image = new Image();
-        image.src = assetUrl(src);
+        loadImageWithFallback(image, src);
         backgroundImages.push(image);
       }
       for (let i = 1; i <= STORY_STAGES.length; i++) {
@@ -4968,21 +5043,21 @@
           image.onload = () => requestAnimationFrame(() => {
             if (game) drawBoard();
           });
-          image.src = assetUrl(`${i}${suffix}.png`);
+          loadImageWithFallback(image, `${i}${suffix}.png`);
           storyImages.set(`${i}${suffix}`, image);
         }
         const background = new Image();
         background.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        background.src = assetUrl(`h${i}.png`);
+        loadImageWithFallback(background, `h${i}.png`);
         storyImages.set(`h${i}`, background);
       }
       const ending = new Image();
       ending.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      ending.src = assetUrl("h10.png");
+      loadImageWithFallback(ending, "h10.png");
       storyImages.set("h10", ending);
       for (const [type, info] of Object.entries(TILE_TYPES)) {
         const image = new Image();
@@ -4994,7 +5069,7 @@
             game.updateUI();
           });
         };
-        image.src = assetUrl(info.asset);
+        loadImageWithFallback(image, info.asset);
         characterImages.set(type, image);
       }
     }
@@ -5005,7 +5080,7 @@
       const nextLayer = bgLayers[nextLayerIndex];
       const currentLayer = bgLayers[activeBackgroundLayer];
       if (!nextLayer || !currentLayer) return;
-      nextLayer.style.backgroundImage = `url("${src}")`;
+      nextLayer.style.backgroundImage = cssAssetUrls(src);
       if (instant) {
         nextLayer.classList.add("active");
         bgLayers[1 - nextLayerIndex]?.classList.remove("active");
