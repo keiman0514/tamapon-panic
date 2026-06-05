@@ -154,9 +154,7 @@
       display: block;
       max-height: calc(100vh - 32px);
       overflow: visible;
-      background:
-        url("UI.png") center / contain no-repeat,
-        url("assets/ui/UI.png") center / contain no-repeat;
+      background: url("UI.png") center / contain no-repeat;
       filter: drop-shadow(0 22px 34px rgba(9, 6, 22, 0.24));
     }
 
@@ -457,8 +455,8 @@
     @media (hover: none) and (pointer: coarse) {
       :root {
         --mobile-side-ui: clamp(112px, 18dvw, 190px);
-        --mobile-left-touch: clamp(76px, 9.6dvw, 86px);
-        --mobile-right-touch: clamp(40px, 5.2dvw, 48px);
+        --mobile-left-touch: clamp(158px, 19dvw, 176px);
+        --mobile-right-touch: clamp(84px, 10dvw, 94px);
         --mobile-gap: 0px;
         --mobile-frame-height: 100dvh;
         --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
@@ -611,9 +609,9 @@
         bottom: 0;
         width: var(--mobile-left-touch);
         height: auto;
-        grid-template-columns: repeat(2, 38px);
-        grid-template-rows: 38px 18px 42px;
-        column-gap: 5px;
+        grid-template-columns: repeat(2, 76px);
+        grid-template-rows: 76px 18px 42px;
+        column-gap: 8px;
         row-gap: 0;
         align-items: end;
         align-content: end;
@@ -627,8 +625,8 @@
         bottom: 0;
         width: var(--mobile-right-touch);
         height: 100%;
-        grid-template-columns: 40px;
-        grid-template-rows: repeat(4, 40px);
+        grid-template-columns: 82px;
+        grid-template-rows: 42px 42px 42px 82px;
         align-content: center;
         justify-content: end;
       }
@@ -663,6 +661,8 @@
       .touch-button--left {
         grid-column: 1;
         grid-row: 1;
+        border-radius: 24px;
+        font-size: 36px;
       }
 
       .touch-button--down {
@@ -673,13 +673,15 @@
       .touch-button--right {
         grid-column: 2;
         grid-row: 1;
+        border-radius: 24px;
+        font-size: 36px;
       }
 
       .touch-button--action {
         grid-column: 1;
         grid-row: 4;
         border-radius: 999px;
-        font-size: 22px;
+        font-size: 36px;
       }
 
       .touch-button--fullscreen {
@@ -717,13 +719,13 @@
 
     @media (hover: none) and (pointer: coarse) and (max-width: 430px) {
       .touch-pad--left {
-        grid-template-columns: repeat(2, 40px);
-        grid-template-rows: 40px 18px 44px;
+        grid-template-columns: repeat(2, 76px);
+        grid-template-rows: 76px 18px 42px;
       }
 
       .touch-pad--right {
-        grid-template-columns: 42px;
-        grid-template-rows: repeat(4, 42px);
+        grid-template-columns: 82px;
+        grid-template-rows: 42px 42px 42px 82px;
       }
 
       .touch-button {
@@ -732,7 +734,12 @@
       }
 
       .touch-button--action {
-        font-size: 21px;
+        font-size: 36px;
+      }
+
+      .touch-button--left,
+      .touch-button--right {
+        font-size: 36px;
       }
 
       .touch-button--pause {
@@ -1561,7 +1568,7 @@
     const RISE_IMPACT_SHAKE_PX = 4.2;
     const HIGH_SCORE_FLASH_MS = 980;
     const HIGH_SCORE_STORAGE_PREFIX = "tamaponPanic.highScore.v1";
-    const ASSET_VERSION = "20260605-linkfix";
+    const ASSET_VERSION = "20260605-rootlayout";
     const CPU_DROP_MULTIPLIER = 1.08;
     const BATTLE_CELL = CELL;
     const BATTLE_BOARD_Y = BOARD_Y;
@@ -1744,81 +1751,8 @@
       return LEVEL_BACKGROUND_SOURCES[index];
     }
 
-    function uniqueItems(items) {
-      return [...new Set(items.filter(Boolean))];
-    }
-
-    function assetCandidates(src) {
-      const clean = String(src || "").split("?")[0];
-      const candidates = [clean];
-      if (/^(Frame2|Mode|OVER|Start|UI|back|win|lose|tamapon-guide)\.png$/i.test(clean)) {
-        candidates.push(`assets/ui/${clean}`);
-      }
-      if (/^\d+[ab]\.png$/i.test(clean)) {
-        const suffix = clean.match(/[ab]\.png$/i)?.[0]?.[0]?.toLowerCase();
-        candidates.push(`assets/story-${suffix}/${clean}`, `assets/story/${clean}`);
-      }
-      if (/^h\d+\.png$/i.test(clean)) {
-        candidates.push(`assets/story-bg/${clean}`, `assets/story/${clean}`);
-      }
-      if (clean.startsWith("animals/")) {
-        candidates.push(`assets/${clean}`);
-      }
-      if (clean.startsWith("back/")) {
-        candidates.push(clean.replace(/^back\//, "assets/backdrops/"), `assets/${clean}`);
-      }
-      if (clean.startsWith("BGM/")) {
-        candidates.push(clean.replace(/^BGM\//, "bgm/"), clean.replace(/^BGM\//, "assets/music/"), clean.replace(/^BGM\//, "assets/bgm/"));
-      }
-      if (clean.startsWith("bgm/")) {
-        candidates.push(clean.replace(/^bgm\//, "BGM/"), clean.replace(/^bgm\//, "assets/music/"), clean.replace(/^bgm\//, "assets/bgm/"));
-      }
-      if (clean.startsWith("voice/")) {
-        candidates.push(`assets/${clean}`);
-      }
-      if (clean === "青空空港.mp3") {
-        candidates.push("BGM/青空空港.mp3", "bgm/青空空港.mp3", "assets/music/青空空港.mp3");
-      }
-      return uniqueItems(candidates);
-    }
-
-    function assetUrlForPath(path) {
-      return `${path}?v=${ASSET_VERSION}`;
-    }
-
-    function assetUrls(src) {
-      return assetCandidates(src).map(assetUrlForPath);
-    }
-
     function assetUrl(src) {
-      return assetUrls(src)[0];
-    }
-
-    function cssAssetUrls(src) {
-      return assetUrls(src).map(url => `url("${url}")`).join(", ");
-    }
-
-    function loadImageWithFallback(image, src) {
-      const urls = assetUrls(src);
-      let index = 0;
-      image.onerror = () => {
-        index += 1;
-        if (index < urls.length) image.src = urls[index];
-      };
-      image.src = urls[index];
-    }
-
-    function createAudioWithFallback(src) {
-      const urls = assetUrls(src);
-      let index = 0;
-      const audio = new Audio(urls[index]);
-      audio.addEventListener("error", () => {
-        if (index >= urls.length - 1) return;
-        index += 1;
-        audio.src = urls[index];
-        audio.load();
-      });
-      return audio;
+      return `${src}?v=${ASSET_VERSION}`;
     }
 
     const canvas = document.getElementById("game");
@@ -1968,7 +1902,7 @@
       initAudioBgm(trackKey = "main") {
         const config = this.bgmTrackConfig(trackKey);
         if (!this.bgmEnabled || !config?.src || this.bgmAudios[trackKey]) return this.bgmAudios[trackKey] || null;
-        const audio = createAudioWithFallback(config.src);
+        const audio = new Audio(config.src);
         audio.loop = true;
         audio.preload = "auto";
         audio.volume = this.bgmVolume(config);
@@ -1984,7 +1918,7 @@
       initVoices() {
         this.voiceAudios = {};
         for (const [key, src] of Object.entries(VOICE_ASSETS)) {
-          const audio = createAudioWithFallback(src);
+          const audio = new Audio(src);
           audio.preload = "auto";
           audio.volume = this.voiceVolume();
           this.voiceAudios[key] = audio;
@@ -5019,22 +4953,22 @@
         frameImageReady = true;
         frameSpriteCache.clear();
       };
-      loadImageWithFallback(frameImage, FRAME_ASSET_SRC);
+      frameImage.src = assetUrl(FRAME_ASSET_SRC);
       guideImage.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      loadImageWithFallback(guideImage, GUIDE_CHARACTER_SRC);
+      guideImage.src = assetUrl(GUIDE_CHARACTER_SRC);
       for (const [key, src] of Object.entries(LOGO_ASSETS)) {
         const image = new Image();
         image.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        loadImageWithFallback(image, src);
+        image.src = assetUrl(src);
         logoImages.set(key, image);
       }
       for (const src of [...LEVEL_BACKGROUND_SOURCES, SECRET_BACKGROUND_SRC]) {
         const image = new Image();
-        loadImageWithFallback(image, src);
+        image.src = assetUrl(src);
         backgroundImages.push(image);
       }
       for (let i = 1; i <= STORY_STAGES.length; i++) {
@@ -5043,21 +4977,21 @@
           image.onload = () => requestAnimationFrame(() => {
             if (game) drawBoard();
           });
-          loadImageWithFallback(image, `${i}${suffix}.png`);
+          image.src = assetUrl(`${i}${suffix}.png`);
           storyImages.set(`${i}${suffix}`, image);
         }
         const background = new Image();
         background.onload = () => requestAnimationFrame(() => {
           if (game) drawBoard();
         });
-        loadImageWithFallback(background, `h${i}.png`);
+        background.src = assetUrl(`h${i}.png`);
         storyImages.set(`h${i}`, background);
       }
       const ending = new Image();
       ending.onload = () => requestAnimationFrame(() => {
         if (game) drawBoard();
       });
-      loadImageWithFallback(ending, "h10.png");
+      ending.src = assetUrl("h10.png");
       storyImages.set("h10", ending);
       for (const [type, info] of Object.entries(TILE_TYPES)) {
         const image = new Image();
@@ -5069,7 +5003,7 @@
             game.updateUI();
           });
         };
-        loadImageWithFallback(image, info.asset);
+        image.src = assetUrl(info.asset);
         characterImages.set(type, image);
       }
     }
@@ -5080,7 +5014,7 @@
       const nextLayer = bgLayers[nextLayerIndex];
       const currentLayer = bgLayers[activeBackgroundLayer];
       if (!nextLayer || !currentLayer) return;
-      nextLayer.style.backgroundImage = cssAssetUrls(src);
+      nextLayer.style.backgroundImage = `url("${src}")`;
       if (instant) {
         nextLayer.classList.add("active");
         bgLayers[1 - nextLayerIndex]?.classList.remove("active");
