@@ -1029,7 +1029,7 @@
       { key: "knockout", label: "ストーリーモード" }
     ];
     const QUIT_CHOICES = ["はい", "いいえ"];
-    const PAUSE_CHOICES = ["つづきをやる", "タイトル画面に戻る"];
+    const PAUSE_CHOICES = ["つづける", "タイトル画面に戻る"];
     const CONTINUE_CHOICES = ["はい", "いいえ"];
     const CONTINUE_COUNTDOWN_MS = 10000;
     const CPU_STRENGTHS = [
@@ -2672,6 +2672,7 @@
         this.continueChoiceIndex = 0;
         this.continueTimer = 0;
         this.quitReturnState = "playing";
+        this.pauseReturnState = "playing";
         this.riseWarningTimer = 0;
         this.riseWarningRows = 0;
         this.playerSingleClearCount = 0;
@@ -2721,6 +2722,7 @@
         this.continueChoiceIndex = 0;
         this.continueTimer = 0;
         this.quitReturnState = "playing";
+        this.pauseReturnState = "playing";
         this.riseWarningTimer = 0;
         this.riseWarningRows = 0;
         this.playerSingleClearCount = 0;
@@ -4391,19 +4393,23 @@
       }
 
       togglePause(playSound = true) {
-        if (this.state === "playing") {
+        if (this.state === "playing" || this.state === "storyStage") {
+          const wasPlaying = this.state === "playing";
+          this.pauseReturnState = this.state;
           this.state = "paused";
           this.message = "PAUSED";
           this.messageTimer = 0;
           this.pauseChoiceIndex = 0;
-          this.setSoftDrop(false);
-          this.horizontalDir = 0;
-          this.horizontalDelayTimer = 0;
-          this.horizontalRepeatTimer = 0;
-          this.lastHorizontalDir = 0;
-          this.keys.delete("ArrowLeft");
-          this.keys.delete("ArrowRight");
-          this.keys.delete("ArrowDown");
+          if (wasPlaying) {
+            this.setSoftDrop(false);
+            this.horizontalDir = 0;
+            this.horizontalDelayTimer = 0;
+            this.horizontalRepeatTimer = 0;
+            this.lastHorizontalDir = 0;
+            this.keys.delete("ArrowLeft");
+            this.keys.delete("ArrowRight");
+            this.keys.delete("ArrowDown");
+          }
           if (playSound) this.sound.pauseCue();
           this.sound.pauseBgm();
           this.updateUI();
@@ -4414,7 +4420,7 @@
 
       resumeFromPause() {
         if (this.state !== "paused") return;
-        this.state = "playing";
+        this.state = this.pauseReturnState || "playing";
         this.message = "";
         this.messageTimer = 0;
         this.sound.resumeCue();
@@ -4809,7 +4815,8 @@
         }
         if (this.state === "storyStage") {
           this.setSoftDrop(false);
-          if (anyInput && !this.prevButtons.gpAnyInput) this.advanceStoryStage();
+          if (menu && !this.prevButtons.gpMenu) this.togglePause();
+          else if (anyInput && !this.prevButtons.gpAnyInput) this.advanceStoryStage();
           this.prevButtons.gpAnyInput = anyInput;
           this.prevButtons.gpLeft = left;
           this.prevButtons.gpRight = right;
@@ -6992,28 +6999,33 @@
     }
 
     function drawPlayModeSelect() {
+      const mobile = isTouchDevice();
       const x = BOARD_X + COLS * CELL / 2;
       const y = BOARD_Y + ROWS * CELL * 0.42;
       const pulse = (Math.sin(performance.now() / 520) + 1) / 2;
       const selectedMode = PLAY_MODES.find(mode => mode.key === game.selectedPlayMode);
+      const panelW = mobile ? 392 : 316;
+      const panelH = mobile ? 304 : 244;
+      const optionW = mobile ? 306 : 224;
+      const optionH = mobile ? 50 : 34;
+      const optionGap = mobile ? 58 : 42;
+      const optionStart = mobile ? -42 : -30;
       ctx.save();
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "rgba(255, 248, 218, 0.88)";
-      roundedRect(ctx, x - 158, y - 122, 316, 244, 24);
+      roundedRect(ctx, x - panelW / 2, y - panelH / 2, panelW, panelH, 24);
       ctx.fill();
       ctx.strokeStyle = "rgba(126, 78, 36, 0.28)";
       ctx.lineWidth = 2;
       ctx.stroke();
-      ctx.fillStyle = "#7b4a22";
-      ctx.font = "900 24px ui-sans-serif, system-ui";
-      ctx.fillText("モードをえらんでね", x, y - 82);
+      drawCenteredFittedText("モードをえらんでね", x, y - (mobile ? 108 : 82), panelW - 46, mobile ? 34 : 24, mobile ? 26 : 18, "#7b4a22");
       PLAY_MODES.forEach((mode, index) => {
         const selected = mode.key === game.selectedPlayMode;
-        const by = y + index * 42 - 30;
-        const bx = x - 112;
-        const bw = 224;
-        const bh = 34;
+        const by = y + index * optionGap + optionStart;
+        const bx = x - optionW / 2;
+        const bw = optionW;
+        const bh = optionH;
         if (selected) {
           ctx.shadowColor = "rgba(255, 133, 171, 0.5)";
           ctx.shadowBlur = 12 + pulse * 8;
@@ -7025,18 +7037,12 @@
         roundedRect(ctx, bx, by - bh / 2, bw, bh, 17);
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.fillStyle = selected ? "#ffffff" : "#8c5a2e";
-        ctx.font = `900 ${selected ? 21 : 19}px ui-sans-serif, system-ui`;
-        ctx.fillText(mode.label, x, by);
+        drawCenteredFittedText(mode.label, x, by, bw - 24, mobile ? selected ? 33 : 30 : selected ? 21 : 19, mobile ? 22 : 15, selected ? "#ffffff" : "#8c5a2e");
       });
       if (selectedMode?.key === "knockout") {
-        ctx.font = "900 13px ui-sans-serif, system-ui";
-        ctx.fillStyle = "rgba(176, 72, 88, 0.82)";
-        ctx.fillText("9つの料理の心を集めよう", x, y + 76);
+        drawCenteredFittedText("9つの料理の心を集めよう", x, y + (mobile ? 94 : 76), panelW - 46, mobile ? 20 : 13, mobile ? 16 : 10, "rgba(176, 72, 88, 0.82)");
       }
-      ctx.font = "800 13px ui-sans-serif, system-ui";
-      ctx.fillStyle = "rgba(123, 74, 34, 0.72)";
-      ctx.fillText("↑ ↓ で選択 / Aで決定 / Bで戻る", x, y + 104);
+      drawCenteredFittedText("↑ ↓ で選択 / Aで決定 / Bで戻る", x, y + (mobile ? 126 : 104), panelW - 46, mobile ? 18 : 13, mobile ? 14 : 10, "rgba(123, 74, 34, 0.72)", 800);
       ctx.restore();
     }
 
@@ -7396,6 +7402,7 @@
         return;
       }
       if (game.state === "paused") {
+        if (game.pauseReturnState === "storyStage") drawStoryStage();
         drawPauseMenu();
         return;
       }
@@ -7547,6 +7554,35 @@
       return result;
     }
 
+    function setFittedUiFont(text, maxWidth, baseSize, minSize, weight = 900) {
+      let size = baseSize;
+      do {
+        ctx.font = `${weight} ${size}px ui-sans-serif, system-ui`;
+        if (ctx.measureText(text).width <= maxWidth || size <= minSize) break;
+        size -= 1;
+      } while (size > minSize);
+      return size;
+    }
+
+    function drawCenteredFittedText(text, x, y, maxWidth, baseSize, minSize, fillStyle, weight = 900) {
+      ctx.fillStyle = fillStyle;
+      setFittedUiFont(text, maxWidth, baseSize, minSize, weight);
+      ctx.fillText(text, x, y);
+    }
+
+    function splitSystemDecorations(lines) {
+      const result = [];
+      for (const line of lines) {
+        const match = line.match(/^(.+[！!])\s+(.+)$/u);
+        if (match && [...match[2]].length <= 6) {
+          result.push(match[1], match[2]);
+        } else {
+          result.push(line);
+        }
+      }
+      return result;
+    }
+
     function drawStorySpeechBubble(entry, alpha = 1) {
       const isSystem = entry.speaker === "system";
       const mobile = isTouchDevice();
@@ -7557,7 +7593,8 @@
       const nameSize = mobile ? 22 : 18;
       const lineStep = isSystem ? (mobile ? 42 : 32) : (mobile ? 39 : 29);
       const font = `900 ${bodySize}px ui-sans-serif, system-ui`;
-      const lines = wrapDialogLines(entry.lines, w - (mobile ? 64 : 56), font, isSystem ? (mobile ? 3 : 2) : 5);
+      const displayLines = isSystem ? splitSystemDecorations(entry.lines) : entry.lines;
+      const lines = wrapDialogLines(displayLines, w - (mobile ? 64 : 56), font, isSystem ? (mobile ? 3 : 2) : 5);
       const h = Math.max(isSystem ? (mobile ? 138 : 116) : (mobile ? 172 : 138), (mobile ? 84 : 72) + lines.length * lineStep);
       const left = x - w / 2;
       const top = y - h / 2;
@@ -7596,14 +7633,28 @@
 
       ctx.shadowColor = "rgba(255,255,255,0.8)";
       ctx.shadowBlur = 6;
-      ctx.fillStyle = isSystem ? "#ff6f2e" : entry.speaker === "tamapon" ? "#ff6f8f" : "#7b4a22";
-      ctx.font = `900 ${nameSize}px ui-sans-serif, system-ui`;
-      ctx.fillText(entry.name, x, top + (mobile ? 34 : 29));
+      drawCenteredFittedText(
+        entry.name,
+        x,
+        top + (mobile ? 34 : 29),
+        w - (mobile ? 58 : 50),
+        nameSize,
+        mobile ? 17 : 14,
+        isSystem ? "#ff6f2e" : entry.speaker === "tamapon" ? "#ff6f8f" : "#7b4a22"
+      );
       ctx.shadowBlur = 0;
-      ctx.fillStyle = "#5f351c";
-      ctx.font = font;
       const firstY = top + (mobile ? 78 : 67) + (Math.max(0, (mobile ? 2 : 3) - lines.length) * (mobile ? 4 : 5));
-      lines.forEach((line, index) => ctx.fillText(line, x, firstY + index * lineStep));
+      lines.forEach((line, index) => {
+        drawCenteredFittedText(
+          line,
+          x,
+          firstY + index * lineStep,
+          w - (mobile ? 78 : 66),
+          bodySize,
+          isSystem ? (mobile ? 26 : 20) : (mobile ? 23 : 17),
+          "#5f351c"
+        );
+      });
       ctx.restore();
     }
 
@@ -7733,35 +7784,21 @@
 
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = "rgba(176, 72, 88, 0.9)";
-      ctx.font = "900 16px ui-sans-serif, system-ui";
-      ctx.fillText(`${stageIndex}皿目  ${stage.place}`, panelX, panelY - panelH / 2 + 32);
-      ctx.fillStyle = isClear ? "#ff6f8f" : "#7b4a22";
       ctx.shadowColor = "rgba(255,255,255,0.72)";
       ctx.shadowBlur = 6;
-      ctx.font = "900 32px ui-sans-serif, system-ui";
-      ctx.fillText(isClear ? `${stage.enemy}を助けた！` : stage.enemy, panelX, panelY - panelH / 2 + 74);
+      drawCenteredFittedText(`${stageIndex}皿目  ${stage.place}`, panelX, panelY - panelH / 2 + 32, panelW - 46, 16, 12, "rgba(176, 72, 88, 0.9)");
+      drawCenteredFittedText(isClear ? `${stage.enemy}を助けた！` : stage.enemy, panelX, panelY - panelH / 2 + 74, panelW - 44, 32, 22, isClear ? "#ff6f8f" : "#7b4a22");
       ctx.shadowBlur = 0;
 
       if (isClear) {
-        ctx.fillStyle = "#8a5528";
-        ctx.font = "900 17px ui-sans-serif, system-ui";
-        ctx.fillText(stage.after[0], panelX, panelY - 30);
-        ctx.fillStyle = "#ff8c32";
-        ctx.font = "900 26px ui-sans-serif, system-ui";
-        ctx.fillText(`「${stage.heart}」`, panelX, panelY + 17);
-        ctx.fillStyle = "#7b4a22";
-        ctx.font = "900 17px ui-sans-serif, system-ui";
-        ctx.fillText("を手に入れた！", panelX, panelY + 50);
+        drawCenteredFittedText(stage.after[0], panelX, panelY - 30, panelW - 48, 17, 13, "#8a5528");
+        drawCenteredFittedText(`「${stage.heart}」`, panelX, panelY + 17, panelW - 58, 26, 18, "#ff8c32");
+        drawCenteredFittedText("を手に入れた！", panelX, panelY + 50, panelW - 58, 17, 13, "#7b4a22");
         drawStoryHeartRow(panelX, panelY + 94, stageIndex);
       } else {
-        ctx.fillStyle = "#6f4423";
-        ctx.font = "900 18px ui-sans-serif, system-ui";
-        ctx.fillText(`料理テーマ：${stage.dish}`, panelX, panelY - 28);
-        ctx.fillStyle = "#7b4a22";
-        ctx.font = "900 20px ui-sans-serif, system-ui";
+        drawCenteredFittedText(`料理テーマ：${stage.dish}`, panelX, panelY - 28, panelW - 48, 18, 13, "#6f4423");
         stage.before.forEach((line, index) => {
-          ctx.fillText(line, panelX, panelY + 18 + index * 30);
+          drawCenteredFittedText(line, panelX, panelY + 18 + index * 30, panelW - 48, 20, 14, "#7b4a22");
         });
         drawStoryHeartRow(panelX, panelY + 102, Math.max(0, stageIndex - 1));
       }
@@ -7773,11 +7810,15 @@
     }
 
     function drawStoryScroll(lines, scrollTimer, scrollMs, isTransition, transitionTimer, transitionDuration, backdropKey) {
+      const mobile = isTouchDevice();
       const scrollProgress = Math.min(1, scrollTimer / scrollMs);
       const transitionProgress = isTransition
         ? 1 - Math.min(1, transitionTimer / Math.max(1, transitionDuration))
         : 0;
-      const lineHeight = 34;
+      const lineHeight = mobile ? 52 : 34;
+      const fontSize = mobile ? 40 : 26;
+      const minFontSize = mobile ? 30 : 20;
+      const textMaxWidth = canvas.width - (mobile ? 88 : 120);
       const textHeight = lines.length * lineHeight;
       const startY = canvas.height + 92;
       const endY = -textHeight - 72;
@@ -7790,7 +7831,6 @@
         ctx.save();
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "800 26px ui-sans-serif, system-ui";
         ctx.fillStyle = "#ffffff";
         ctx.shadowColor = "rgba(255, 255, 255, 0.28)";
         ctx.shadowBlur = 8;
@@ -7802,7 +7842,7 @@
           const lineY = y + index * lineHeight;
           const edgeFade = Math.min(1, Math.max(0, (lineY - 24) / 90), Math.max(0, (canvas.height - 34 - lineY) / 90));
           ctx.globalAlpha = edgeFade;
-          ctx.fillText(line, canvas.width / 2, lineY);
+          drawCenteredFittedText(line, canvas.width / 2, lineY, textMaxWidth, fontSize, minFontSize, "#ffffff", 800);
         }
         ctx.restore();
 
@@ -7819,10 +7859,8 @@
 
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "800 14px ui-sans-serif, system-ui";
-        ctx.fillStyle = "rgba(255,255,255,0.48)";
         ctx.shadowBlur = 0;
-        ctx.fillText("ボタンでスキップ", canvas.width / 2, canvas.height - 30);
+        drawCenteredFittedText("ボタンでスキップ", canvas.width / 2, canvas.height - (mobile ? 38 : 30), textMaxWidth, mobile ? 22 : 14, mobile ? 17 : 11, "rgba(255,255,255,0.58)", 800);
       } else {
         drawCoverImage(getStoryImage(backdropKey), 0, 0, canvas.width, canvas.height, transitionProgress);
         ctx.fillStyle = `rgba(0,0,0,${Math.max(0, 1 - transitionProgress)})`;
@@ -8058,6 +8096,10 @@
         return;
       }
       if (game.state === "storyStage") {
+        if (!event.repeat && key.pause) {
+          game.togglePause();
+          return;
+        }
         if (!event.repeat) game.advanceStoryStage();
         return;
       }
@@ -8268,11 +8310,17 @@
         game.skipStoryEnding();
         return;
       }
+      if (game.state === "title" && game.dismissTitleDemo()) return;
+
+      if (action === "pause") {
+        if (game.state === "playing" || game.state === "paused" || game.state === "storyStage") game.togglePause();
+        return;
+      }
+
       if (game.state === "storyStage") {
         game.advanceStoryStage();
         return;
       }
-      if (game.state === "title" && game.dismissTitleDemo()) return;
 
       if (action === "action") {
         if (game.state === "playing") game.rotate(1);
@@ -8291,11 +8339,6 @@
         else if (game.state === "paused") game.resumeFromPause();
         else if (game.state === "continueConfirm") game.declineContinue();
         else if (game.state === "gameover") game.confirmGameOver();
-        return;
-      }
-
-      if (action === "pause") {
-        if (game.state === "playing" || game.state === "paused") game.togglePause();
         return;
       }
 
