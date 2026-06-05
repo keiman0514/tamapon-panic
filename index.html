@@ -454,12 +454,12 @@
 
     @media (hover: none) and (pointer: coarse) {
       :root {
-        --mobile-side-ui: clamp(112px, 18dvw, 190px);
+        --mobile-side-ui: clamp(104px, 14dvw, 150px);
         --mobile-left-touch: clamp(76px, 9.6dvw, 86px);
         --mobile-right-touch: clamp(40px, 5.2dvw, 48px);
         --mobile-gap: 0px;
         --mobile-frame-height: 100dvh;
-        --mobile-frame-width: calc(100dvw - var(--mobile-left-touch) - var(--mobile-side-ui) - var(--mobile-right-touch) - var(--mobile-gap) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+        --mobile-frame-width: calc(var(--mobile-frame-height) * 1000 / 960);
       }
 
       html,
@@ -486,27 +486,25 @@
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
-        grid-template-columns: minmax(0, 1fr) var(--mobile-side-ui);
+        grid-template-columns: var(--mobile-frame-width) var(--mobile-side-ui);
         gap: var(--mobile-gap);
         align-items: center;
         justify-items: center;
+        justify-content: center;
         overflow: hidden;
-        padding:
-          0
-          calc(var(--mobile-right-touch) + env(safe-area-inset-right, 0px))
-          0
-          calc(var(--mobile-left-touch) + env(safe-area-inset-left, 0px));
+        padding: 0;
       }
 
       .stage-wrap {
-        width: 100%;
-        height: 100%;
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
         min-height: 0;
-        place-items: end center;
+        place-items: center;
       }
 
       .stage-wrap::before {
-        width: min(70dvw, calc(var(--mobile-frame-height) * 1.08));
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
         border-radius: 24px;
       }
 
@@ -522,11 +520,10 @@
       }
 
       canvas {
-        width: min(
-          var(--mobile-frame-width),
-          calc(var(--mobile-frame-height) * 1000 / 960)
-        );
-        max-height: var(--mobile-frame-height);
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
+        max-width: none;
+        max-height: none;
         box-shadow: none;
       }
 
@@ -772,24 +769,26 @@
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
-        grid-template-columns: minmax(0, 1fr) var(--mobile-side-ui);
+        grid-template-columns: var(--mobile-frame-width) var(--mobile-side-ui);
         gap: var(--mobile-gap);
+        justify-content: center;
         padding:
           0
-          calc(var(--mobile-right-touch) + env(safe-area-inset-right, 0px))
           0
-          calc(var(--mobile-left-touch) + env(safe-area-inset-left, 0px));
+          0
+          0;
       }
 
       .stage-wrap {
-        width: 100%;
-        height: 100%;
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
         min-height: 0;
-        place-items: end center;
+        place-items: center;
       }
 
       .stage-wrap::before {
-        width: min(70dvw, calc(var(--mobile-frame-height) * 1.08));
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
         border-radius: 24px;
       }
 
@@ -805,11 +804,10 @@
       }
 
       canvas {
-        width: min(
-          var(--mobile-frame-width),
-          calc(var(--mobile-frame-height) * 1000 / 960)
-        );
-        max-height: var(--mobile-frame-height);
+        width: var(--mobile-frame-width);
+        height: var(--mobile-frame-height);
+        max-width: none;
+        max-height: none;
         box-shadow: none;
       }
 
